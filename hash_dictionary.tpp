@@ -116,16 +116,63 @@ void HashDictionary<KeyType, ValueType, HashType>::add(const KeyType &key,
     // TODO implement the add method...
     
     // 1. hash the key
-    
+    std::size_t index = m_hash(key) % m_capacity;
     
     // 2. do linear probing
-    
+    std::size_t numprobes = 0;
+    while (m_data[index].filled && (numprobes < m_capacity)) 
+    {
+        if (m_data[index].key == key) 
+        {
+            //if key already exists, add the item
+            m_data[index].value = value;
+            return;
+        }
+        index = (index + 1) % m_capacity;
+        numprobes+=1;
+    }
     // 3. Check to see if linear probing has failed
-    
+        if (numprobes == m_capacity) 
+        {
+            throw std::logic_error("Too many probes in HashDictionary::add");
+        }
     // 4. insert the key-value pair
-   
+        m_data[index].filled = true;
+        m_data[index].key = key;
+        m_data[index].value = value;
+        m_size++;
     // 5. test if we need to reallocate¡¡and reallocate if needed
-    
+
+        if (static_cast<float>(m_size) / m_capacity > m_load_factor)
+        {
+            //increase the capacity
+            std::size_t new_capacity = m_capacity +1000;
+
+            // create a new data array 
+            KeyValueType* new_data = new KeyValueType[new_capacity];
+
+            //move the old item to new data 
+            for (std::size_t i = 0; i < m_capacity; i++) 
+            {
+                if (m_data[i].filled) 
+                {
+                    // rehash the key in the new array.
+                    std::size_t new_index = m_hash(m_data[i].key) % new_capacity;
+                    
+                    //while array[index] is full, 
+                    while (new_data[new_index].filled) 
+                    {
+                        new_index = (new_index + 1) % new_capacity;
+                    }
+                    new_data[new_index] = m_data[i];
+                }
+            }
+            //delete the old one and update the new one
+            delete[] m_data;
+            m_data = new_data;
+            m_capacity = new_capacity;
+
+        }
       
 
 }
@@ -134,6 +181,25 @@ template <typename KeyType, typename ValueType, typename HashType>
 void HashDictionary<KeyType, ValueType, HashType>::remove(const KeyType &key) {
     
     //TODO implement the remove method...
+
+    // hash the key
+    std::size_t index = m_hash(key) % m_capacity;
+
+    //do linear probing
+    std::size_t numprobes = 0;
+    while (m_data[index].filled && numprobes < m_capacity) {
+        if (m_data[index].key == key) {
+            //found the key , then remove it
+            m_data[index].filled = false;
+            m_size--;
+            return;
+        }
+        index = (index + 1) % m_capacity;
+        numprobes++;
+    }
+
+    //if not found
+    throw std::logic_error("Not Found the key in HashDictionary::remove");
 }
 
 template <typename KeyType, typename ValueType, typename HashType>
