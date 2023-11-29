@@ -20,6 +20,7 @@ bool isprime(std::size_t index) {
     return true;
 }
 
+
 template <typename KeyType, typename ValueType, typename HashType>
 HashDictionary<KeyType, ValueType, HashType>::HashDictionary(
                                                              HashType hash, std::size_t initial_capacity, float load_factor) {
