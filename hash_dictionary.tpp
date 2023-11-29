@@ -1,5 +1,4 @@
 #include "hash_dictionary.hpp"
-
 // prime test for use in add
 #include <cmath>
 bool isprime(std::size_t index) {
