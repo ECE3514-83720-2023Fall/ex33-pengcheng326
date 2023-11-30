@@ -43,6 +43,7 @@ HashDictionary<KeyType, ValueType, HashType>::HashDictionary(
     }
 }
 
+
 template <typename KeyType, typename ValueType, typename HashType>
 HashDictionary<KeyType, ValueType, HashType>::HashDictionary(
                                                              HashDictionary &&rhs) {
